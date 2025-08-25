@@ -228,9 +228,12 @@ class $modify(EditorUIHook, EditorUI) {
 #ifdef GEODE_IS_WINDOWS
     $execute {
         BindManager::get()->registerBindable(
-            "free-select-lasso-select-modifier"_spr,
-            "", { Keybind::create(KEY_Alt, Modifier::None) },
-            "Editor/Modify"
+            BindableAction(
+                "free-select-lasso-select-modifier"_spr,
+                "Free Select Modifier", "",
+                {Keybind::create(KEY_Alt, Modifier::None)},
+                "Editor/Modify"
+            )
         );
     }
 #endif
