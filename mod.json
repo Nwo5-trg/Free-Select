@@ -1,0 +1,90 @@
+{
+	"geode": "4.6.3",
+	"gd": {
+		"win": "2.2074",
+		"android": "2.2074",
+		"mac": "2.2074",
+		"ios": "2.2074"
+	},
+	"id": "nwo5.select_shenanigans",
+	"name": "Free Select",
+	"version": "v1.0.0",
+	"developer": "Nwo5",
+	"description": "sister mod to free snap | draw hooks",
+	"tags": ["utility", "customization", "editor", "enhancement", "offline"],
+	"links": {
+		"source": "https://github.com/Nwo5-trg/Free-Select",
+		"community": "https://discord.gg/AeFeYWGUxZ"
+	},
+	"dependencies": {
+		"geode.custom-keybinds": {
+			"importance": "required",
+			"version": "v1.10.4",
+			"platforms": ["win"]
+		},
+		"nwo5.free_snap": {
+			"importance": "suggested",
+			"version": "1.0.0"
+		}
+	},
+	"settings": {
+		"lasso-always-enabled": {
+			"type": "bool",
+			"name": "Lasso Always Enabled",
+			"description": "makes lasso the default instead of rect select | on mobile used to disable the lasso select part of the mod and also works in reverse cuz :3c",
+			"default": false
+		},
+		"grid-size": {
+			"type": "float",
+			"name": "Grid Size",
+			"description": "smaller number means more accurate but prolly more laggy, 15 is fine for almost all cases, if u wanna know my scuffed way of lasso selecting u can read about",
+			"default": 15,
+			"min": 5,
+			"max": 60
+		},
+		"make-points-boxes": {
+			"type": "bool",
+			"name": "Make Points Boxes",
+			"description": "makes lasso a lil more lenient by checking squares of grid size instead of just points",
+			"default": true
+		},
+		"guarantee-center": {
+			"type": "bool",
+			"name": "Guarantee Center",
+			"description": "took me multiple tries to spell and yk it | always place a selection point at the center of the min/max of the lasso selection",
+			"default": true
+		},
+		"select-color": {
+			"type": "rgba",
+			"name": "Select Color",
+			"default": [0, 255, 0, 255]
+		},
+		"mac-keycode": {
+			"type": "int",
+			"name": "Mac Modifer Keycode",
+			"description": "read about, by default left option",
+			"default": 58,
+			"platforms": ["mac"]
+		},
+		"second-mac-keycode": {
+			"type": "int",
+			"name": "Second Mac Modifer Keycode",
+			"description": "read about, by default right option, set to 0 and it gets ignored",
+			"default": 61,
+			"platforms": ["mac"]
+		},
+		"chroma": {
+			"type": "bool",
+			"name": "Chroma",
+			"description": "i wanna be cute",
+			"default": false
+		},
+		"chroma-speed": {
+			"type": "float",
+			"name": "normalize your 'straightness'",
+			"default": 0.25,
+			"min": 0.05,
+			"max": 10
+		}
+	}
+}
