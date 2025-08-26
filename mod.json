@@ -85,6 +85,12 @@
 			"default": 0.25,
 			"min": 0.05,
 			"max": 10
+		},
+		"log": {
+			"type": "bool",
+			"name": "Log Stuff",
+			"description": "windows",
+			"default": false
 		}
 	}
 }

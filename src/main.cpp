@@ -25,6 +25,10 @@ class $modify(EditorUIHook, EditorUI) {
         bool guaranteeCenter;
         bool makePointsBoxes;
         bool chroma;
+        bool log;
+        #ifdef GEODE_IS_WINDOWS
+            bool keyClicked;
+        #endif
         #ifdef GEODE_IS_MACOS
             unsigned short macKeycode;
             unsigned short secondMacKeycode;
@@ -59,6 +63,7 @@ class $modify(EditorUIHook, EditorUI) {
 
         #ifdef GEODE_IS_MOBILE
             fields->lassoEnabled = !fields->lassoAlwaysEnabled;
+            if (fields->log) log::info("enabled {}", fields->lassoEnabled);
         #endif
 
         #ifdef GEODE_IS_MACOS
@@ -67,6 +72,12 @@ class $modify(EditorUIHook, EditorUI) {
                 pressed = CGEventSourceKeyState(kCGEventSourceStateHIDSystemState, fields->secondMacKeycode);
             }
             fields->lassoEnabled = fields->lassoAlwaysEnabled ? !pressed : pressed;
+            if (fields->log) log::info("enabled {} | pressed {}", fields->lassoEnabled, pressed);
+        #endif
+
+        #ifdef GEODE_IS_WINDOWS
+            fields->lassoEnabled = fields->lassoAlwaysEnabled ? !fields->keyClicked : fields->keyClicked;
+            if (fields->log) log::info("enabled {} | clicked {}", fields->lassoEnabled, fields->keyClicked);
         #endif
 
         bool ret = m_swipeActive;
@@ -84,6 +95,7 @@ class $modify(EditorUIHook, EditorUI) {
         fields->guaranteeCenter = mod->getSettingValue<bool>("guarantee-center");
         fields->makePointsBoxes = mod->getSettingValue<bool>("make-points-boxes");
         fields->chroma = mod->getSettingValue<bool>("chroma");
+        fields->log = mod->getSettingValue<bool>("log");
 
         #ifdef GEODE_IS_MACOS
             fields->macKeycode = mod->getSettingValue<int64_t>("mac-keycode");
@@ -96,8 +108,9 @@ class $modify(EditorUIHook, EditorUI) {
         fields->selectColor = mod->getSettingValue<ccColor4B>("select-color");
 
         #ifdef GEODE_IS_WINDOWS
+            fields->keyClicked = false;
             this->template addEventListener<InvokeBindFilter>([=](InvokeBindEvent* event) {
-                fields->lassoEnabled = fields->lassoAlwaysEnabled ? !event->isDown() : event->isDown();
+                fields->keyClicked = event->isDown();
                 return ListenerResult::Propagate;
             }, "free-select-lasso-select-modifier"_spr);
         #endif
