@@ -17,11 +17,6 @@
 		"community": "https://discord.gg/AeFeYWGUxZ"
 	},
 	"dependencies": {
-		"geode.custom-keybinds": {
-			"importance": "required",
-			"version": "v1.10.4",
-			"platforms": ["win"]
-		},
 		"nwo5.free_snap": {
 			"importance": "suggested",
 			"version": "1.0.0"
@@ -61,17 +56,31 @@
 		},
 		"mac-keycode": {
 			"type": "int",
-			"name": "Mac Modifer Keycode",
-			"description": "read about, by default left option",
+			"name": "Modifer Keycode",
+			"description": "read about",
 			"default": 58,
 			"platforms": ["mac"]
 		},
 		"second-mac-keycode": {
 			"type": "int",
-			"name": "Second Mac Modifer Keycode",
-			"description": "read about, by default right option, set to 0 and it gets ignored",
+			"name": "Second Modifer Keycode",
+			"description": "read about",
 			"default": 61,
 			"platforms": ["mac"]
+		},
+		"windows-keycode": {
+			"type": "int",
+			"name": "Modifer Keycode",
+			"description": "read about",
+			"default": 164,
+			"platforms": ["win"]
+		},
+		"second-windows-keycode": {
+			"type": "int",
+			"name": "Second Modifer Keycode",
+			"description": "read about",
+			"default": 165,
+			"platforms": ["win"]
 		},
 		"chroma": {
 			"type": "bool",

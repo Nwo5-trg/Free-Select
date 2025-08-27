@@ -2,8 +2,7 @@
 #include <Geode/modify/EditorUI.hpp>
 
 #ifdef GEODE_IS_WINDOWS
-    #include <geode.custom-keybinds/include/Keybinds.hpp>
-    using namespace keybinds;
+    #include <Windows.h>
 #endif
 
 #ifdef GEODE_IS_MACOS
@@ -26,12 +25,9 @@ class $modify(EditorUIHook, EditorUI) {
         bool makePointsBoxes;
         bool chroma;
         bool log;
-        #ifdef GEODE_IS_WINDOWS
-            bool keyClicked;
-        #endif
-        #ifdef GEODE_IS_MACOS
-            unsigned short macKeycode;
-            unsigned short secondMacKeycode;
+        #ifdef GEODE_IS_DESKTOP
+            unsigned int keycode;
+            unsigned int secondKeycode;
         #endif
         float gridSize;
         float chromaSpeed;
@@ -67,17 +63,17 @@ class $modify(EditorUIHook, EditorUI) {
         #endif
 
         #ifdef GEODE_IS_MACOS
-            bool pressed = CGEventSourceKeyState(kCGEventSourceStateHIDSystemState, fields->macKeycode);
-            if (!pressed && fields->secondMacKeycode != 0) {
-                pressed = CGEventSourceKeyState(kCGEventSourceStateHIDSystemState, fields->secondMacKeycode);
-            }
+            bool pressed = CGEventSourceKeyState(kCGEventSourceStateHIDSystemState, fields->keycode);
+            if (!pressed) pressed = CGEventSourceKeyState(kCGEventSourceStateHIDSystemState, fields->secondKeycode);
             fields->lassoEnabled = fields->lassoAlwaysEnabled ? !pressed : pressed;
             if (fields->log) log::info("enabled {} | pressed {}", fields->lassoEnabled, pressed);
         #endif
 
         #ifdef GEODE_IS_WINDOWS
-            fields->lassoEnabled = fields->lassoAlwaysEnabled ? !fields->keyClicked : fields->keyClicked;
-            if (fields->log) log::info("enabled {} | clicked {}", fields->lassoEnabled, fields->keyClicked);
+            bool pressed = (GetAsyncKeyState(fields->keycode) & 0x8000);
+            if (!pressed) pressed = (GetAsyncKeyState(fields->secondKeycode) & 0x8000);
+            fields->lassoEnabled = fields->lassoAlwaysEnabled ? !pressed : pressed;
+            if (fields->log) log::info("enabled {} | pressed {}", fields->lassoEnabled, pressed);
         #endif
 
         bool ret = m_swipeActive;
@@ -96,24 +92,21 @@ class $modify(EditorUIHook, EditorUI) {
         fields->makePointsBoxes = mod->getSettingValue<bool>("make-points-boxes");
         fields->chroma = mod->getSettingValue<bool>("chroma");
         fields->log = mod->getSettingValue<bool>("log");
-
+        // i could do some other hsenanigans other than this but wtv
         #ifdef GEODE_IS_MACOS
-            fields->macKeycode = mod->getSettingValue<int64_t>("mac-keycode");
-            fields->secondMacKeycode = mod->getSettingValue<int64_t>("second-mac-keycode");
+            fields->keycode = mod->getSettingValue<int64_t>("mac-keycode");
+            fields->secondKeycode = mod->getSettingValue<int64_t>("second-mac-keycode");
+        #endif
+
+        #ifdef GEODE_IS_WINDOWS
+            fields->keycode = mod->getSettingValue<int64_t>("windows-keycode");
+            fields->secondKeycode = mod->getSettingValue<int64_t>("second-windows-keycode");
         #endif
         
         fields->gridSize = mod->getSettingValue<double>("grid-size");
         fields->chromaSpeed = mod->getSettingValue<double>("chroma-speed");
 
         fields->selectColor = mod->getSettingValue<ccColor4B>("select-color");
-
-        #ifdef GEODE_IS_WINDOWS
-            fields->keyClicked = false;
-            this->template addEventListener<InvokeBindFilter>([=](InvokeBindEvent* event) {
-                fields->keyClicked = event->isDown();
-                return ListenerResult::Propagate;
-            }, "free-select-lasso-select-modifier"_spr);
-        #endif
 
         auto chromaNode = CCNodeRGBA::create();
         chromaNode->runAction(CCRepeatForever::create(
@@ -137,8 +130,7 @@ class $modify(EditorUIHook, EditorUI) {
     bool ccTouchBegan(CCTouch* p0, CCEvent* p1) {
         if (!EditorUI::ccTouchBegan(p0, p1)) return false;
 
-        auto fields = m_fields.self();
-        if (fields->lassoEnabled) fields->lassoPoints.clear();
+        m_fields->lassoPoints.clear();
 
         return true;
     }
@@ -237,16 +229,3 @@ class $modify(EditorUIHook, EditorUI) {
         updateObjectInfoLabel();
     }
 };
-
-#ifdef GEODE_IS_WINDOWS
-    $execute {
-        BindManager::get()->registerBindable(
-            BindableAction(
-                "free-select-lasso-select-modifier"_spr,
-                "Free Select Modifier", "",
-                {Keybind::create(KEY_Alt, Modifier::None)},
-                "Editor/Modify"
-            )
-        );
-    }
-#endif

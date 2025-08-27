@@ -2,13 +2,10 @@
 lasso select and changing select color
 
 ## How To Use
-click "*#ifdef GEODE_IS_MACOS (a) #endif* ***modifier key***" as well as however u multiselect on ur platform
+click a modifier key as well as however u multiselect on ur platform
 
 ## Modifier Key
-ok so on windows u can change the modifier thru custom keybinds by default its alt i think
-
-with mac u set the modifier(s) (theres 2 cuz by default its r/l option) to keycodes thru settings
-why? you might ask, well maybe if custom keybinds worked for me and some other mac users or at the very least released its optional api to the index then maybe it wouldnt be like this but noooo, so you are stuck with this mac users (me included)
+ok so for windows/mac, [heres the enum class figure it out](https://github.com/cocos2d/cocos2d-x/blob/cocos2d-x-3.13/cocos/base/CCEventKeyboard.h#L48) by default its alt on windows and option on mac
 
 for ios and android uhh read the setting or smth
 ```json
@@ -20,7 +17,7 @@ for ios and android uhh read the setting or smth
 }
 ```
 
-## My Scuffed Lasso Select System
+## Scuffed Lasso Select System
 i mean idk why anyone would care but
 
 it saves what pos ur touch is at every frame, then when u release ur last pos gets connected to ur first with a straight line
